@@ -2,7 +2,6 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import requests
 from datetime import datetime
-import locale
 
 
 def dateParse(date_string):
@@ -27,10 +26,10 @@ def timeParse(time_string):
 def get_prayer_time():
     x= requests.get('https://essexmasjid.com/wp-json/dpt/v1/prayertime?filter=today')
     x = x.json()
-    return "Today : " +dateParse(x[0]['d_date']) + '\n'+ "________________________"+ '\n' "Fajr Jamah : "+ timeParse(x[0]['fajr_jamah']) + '\n' + "Sunrise : "+ x[0]['sunrise'] + '\n' + "Zuhr Jamah : "+ x[0]['zuhr_jamah'] + '\n' +"Asr Jamah : "+ x[0]['asr_jamah'] + '\n' + "Magrib Jamah : "+ x[0]['maghrib_jamah'] + '\n' + "Isha Jamah : "+ timeParse( x[0]['isha_jamah'])
+    return "Today : " +dateParse(x[0]['d_date']) + '\n'+ "________________________"+ '\n' "Fajr Jamah : "+ timeParse(x[0]['fajr_jamah']) + '\n' + "Sunrise : "+ timeParse(x[0]['sunrise']) + '\n' + "Zuhr Jamah : "+ timeParse(x[0]['zuhr_jamah']) + '\n' +"Asr Jamah : "+ timeParse(x[0]['asr_jamah']) + '\n' + "Magrib Jamah : "+ timeParse(x[0]['maghrib_jamah']) + '\n' + "Isha Jamah : "+ timeParse( x[0]['isha_jamah'])
 
 
-async def hello(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def today(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(get_prayer_time())
 
 
@@ -40,7 +39,7 @@ token = '6794319131:AAFzA76AEKXrtesZ5oKSRYHApMoU6CwKTnY'
 #create  a telegram notification that will fire every day at 12 am
 app = ApplicationBuilder().token(token).build()
 
-app.add_handler(CommandHandler("today", hello))
+app.add_handler(CommandHandler("today", today))
 
 app.run_polling()
 
